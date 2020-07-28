@@ -21,8 +21,12 @@ export const loadImage = (imageSrc) => {
       image.src = canvasTIF.toDataURL("image/png");
     }
   else {
-      image.src = imageSrc
-      }
+    var input = fs.readFileSync(imageSrc);
+    var tiff = new Tiff({ buffer: input });
+    var canvasTIF = tiff.toCanvas();
+   
+    image.src = canvasTIF.toDataURL("image/png");
+    }
   }
 
   return new Promise((resolve, reject) => {
