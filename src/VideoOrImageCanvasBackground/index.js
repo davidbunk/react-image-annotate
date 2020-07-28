@@ -5,6 +5,9 @@ import { styled } from "@material-ui/core/styles"
 import useEventCallback from "use-event-callback"
 import { useSettings } from "../SettingsProvider"
 
+var fs = require('fs');
+var Tiff = require('tiff.js');
+
 const Video = styled("video")({
   zIndex: 0,
   position: "absolute",
@@ -112,7 +115,15 @@ export default ({
   ])
 
   if (!videoSrc && !imageSrc) return "No imageSrc or videoSrc provided"
-
+  if (imageSrc.indexOf('.tif') !== -1) {
+    var input = fs.readFileSync(imageSrc);
+    var tiff = new Tiff({
+      buffer: input
+    });
+    var canvasTIF = tiff.toCanvas();
+    imageSrc = canvasTIF.toDataURL("image/png");
+  } 
+  
   return imageSrc && videoTime === undefined ? (
     <StyledImage
       {...mouseEvents}
