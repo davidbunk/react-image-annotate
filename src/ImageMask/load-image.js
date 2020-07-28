@@ -1,3 +1,5 @@
+var Tiff = require('tiff.js');
+
 export const loadImage = (imageSrc) => {
   // Check if image is already loaded in a page element
   let image = Array.from(document.getElementsByTagName("img")).find(
@@ -10,7 +12,17 @@ export const loadImage = (imageSrc) => {
   if (!image) {
     image = new Image()
     image.crossOrigin = "anonymous"
-    image.src = imageSrc
+    
+    if (imageSrc.indexOf('.tif') !== -1) {
+      var input = fs.readFileSync(imageSrc);
+      var tiff = new Tiff({ buffer: input });
+      var canvasTIF = tiff.toCanvas();
+     
+      image.src = canvasTIF.toDataURL("image/png");
+    }
+  else {
+      image.src = imageSrc
+      }
   }
 
   return new Promise((resolve, reject) => {
